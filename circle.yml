@@ -1,3 +1,5 @@
 compile:
+  pre:
+    - gcc --version
   override:
     - make
