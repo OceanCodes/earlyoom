@@ -4,7 +4,7 @@ compile:
   override:
     - make
   post:
-    - cp earlyoom $CIRCLE_ARTIFACTS
+    - cp earlyoom earlyoom.initscript $CIRCLE_ARTIFACTS
 
 test:
   override:
