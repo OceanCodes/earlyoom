@@ -3,3 +3,9 @@ compile:
     - gcc --version
   override:
     - make
+  post:
+    - cp earlyoom $CIRCLE_ARTIFACTS
+
+test:
+  override:
+    - echo "no tests"
