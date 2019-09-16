@@ -1,0 +1,46 @@
+version: 2.1
+
+executors:
+  golang-executor:
+    docker:
+      - image: codeocean/build-golang:1.12
+    working_directory: /go/src/github.com/OceanCodes/earlyoom
+
+jobs:
+  build:
+    executor: golang-executor
+    steps:
+      - checkout
+      - run: make test
+
+  release:
+    executor: golang-executor
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: |
+            make earlyoom earlyoom.service earlyoom.initscript
+      - deploy:
+          name: Release
+          command: |
+            mkdir release
+            cp earlyoom release/earlyoom-$(uname -s)-$(uname -m)
+            cp earlyoom.service earlyoom.initscript release
+
+            go get github.com/tcnksm/ghr
+            ghr "${CIRCLE_TAG}" release/
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
+  release:
+    jobs:
+      - release:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*-co/
